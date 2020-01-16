@@ -1,0 +1,134 @@
+#include <iostream>
+#include <conio.h>
+#include <windows.h>
+#include <dos.h>
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+COORD CursorPosition;
+CONSOLE_CURSOR_INFO     cursorInfo;
+
+using namespace std;
+
+void gotoxy(int x, int y)
+{
+    CursorPosition.X = x;
+    CursorPosition.Y = y;
+    SetConsoleCursorPosition(console, CursorPosition);
+
+    GetConsoleCursorInfo(console, &cursorInfo);
+    cursorInfo.bVisible = false; // set the cursor visibility
+    SetConsoleCursorInfo(console, &cursorInfo);
+}
+
+class Object
+{
+    public:
+        float x, y;
+        char sym;
+
+        virtual void Draw() = 0;
+        virtual void Clear() = 0;
+};
+
+class Dynamic : public Object
+{
+    public:
+        float speed;
+
+        virtual void MoveCalculation() = 0;
+};
+
+class Star : public Dynamic
+{
+public:
+    float time;
+
+    Star()
+    {
+        sym = '.';
+        int randomNumber = rand() % 22 + 1;
+        x = 77;
+        y = randomNumber;
+        speed = randomNumber * 0.002;
+        time = 100 * speed;
+    }
+
+    void Draw()
+    {
+        gotoxy(x, y);
+        cout << sym;
+        MoveCalculation();
+    }
+
+    void Clear()
+    {
+        gotoxy(x, y);
+        cout << ' ';
+    }
+
+    void MoveCalculation()
+    {
+        if (time < 0)
+        {
+            Clear();
+            x -= 1;
+            time = 100 * speed;
+            if (x == 0)
+            {
+                x = 77;
+                speed = (rand() % 22 + 1) * 0.002;
+            }
+        }
+        else
+        {
+            time -= 0.1;
+        }
+    }
+};
+
+class StarsBackGround
+{
+    public:
+        Star stars[17];
+
+        StarsBackGround()
+        {
+            for (int i = 0; i < 17; i++)
+            {
+                stars[i] = Star();
+            }
+        }
+
+        void DrawStars()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                stars[i].Draw();
+            }
+        }
+};
+
+int main()
+{
+    srand((unsigned)time(0));
+    StarsBackGround stars;
+
+    while (true)
+    {        
+        stars.DrawStars();
+    }
+}
+
+// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
+// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
+
+// Советы по началу работы 
+//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
+//   2. В окне Team Explorer можно подключиться к системе управления версиями.
+//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
+//   4. В окне "Список ошибок" можно просматривать ошибки.
+//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
+//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
