@@ -9,19 +9,10 @@
 HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD CursorPosition;
 CONSOLE_CURSOR_INFO     cursorInfo;
+CONSOLE_SCREEN_BUFFER_INFO consolle;
+
 
 using namespace std;
-
-void gotoxy(int x, int y)
-{
-    CursorPosition.X = x;
-    CursorPosition.Y = y;
-    SetConsoleCursorPosition(console, CursorPosition);
-
-    GetConsoleCursorInfo(console, &cursorInfo);
-    cursorInfo.bVisible = false; // set the cursor visibility
-    SetConsoleCursorInfo(console, &cursorInfo);
-}
 
 class Object
 {
@@ -31,6 +22,19 @@ class Object
 
         virtual void Draw() = 0;
         virtual void Clear() = 0;
+
+        void gotoxy(int x, int y)
+        {
+            CursorPosition.X = x;
+            CursorPosition.Y = y;
+            SetConsoleCursorPosition(console, CursorPosition);
+
+            GetConsoleCursorInfo(console, &cursorInfo);
+            cursorInfo.bVisible = false; // set the cursor visibility
+            SetConsoleCursorInfo(console, &cursorInfo);
+
+
+        }
 };
 
 class Dynamic : public Object
@@ -50,7 +54,8 @@ public:
     {
         sym = '.';
         int randomNumber = rand() % 22 + 1;
-        x = 77;
+        GetConsoleScreenBufferInfo(console, &consolle);        
+        x = consolle.dwSize.X - 1;
         y = randomNumber;
         speed = randomNumber * 0.002;
         time = 100 * speed;
