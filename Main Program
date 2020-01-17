@@ -32,8 +32,6 @@ class Object
             GetConsoleCursorInfo(console, &cursorInfo);
             cursorInfo.bVisible = false; // set the cursor visibility
             SetConsoleCursorInfo(console, &cursorInfo);
-
-
         }
 };
 
